@@ -6,46 +6,53 @@
 			$(function(){
 				$('#panelWrapper').smartPanels({ callback: initComplete });
 			});
-			function animatePanels(){
-				$('#panelWrapper').smartPanels({fx: $('#ddlFx').val(), duration: 1000, callback: definedCallback});
-			}
+            function animatePanels() {    
+                $('#panelWrapper').smartPanels({ fx: $('#ddlFx').val(), duration: parseInt($('#ddlDuration').val()), callback: definedCallback });
+            }
 			function definedCallback(){
 				$('#log').append("<br />animation complete");
 			}
 			function initComplete(){
 				$('#log').append("<br />init complete");
-			}
+            }
+            function addPanel() {
+                $('#panelWrapper').append('<div class="panel"></div>').smartPanels('refresh');
+            }
 		</script>
 		<style type="text/css">
 			.smartPanel, #panelWrapper{
 				border: 1px solid #ccc;
 			}
-			.group0 { background-color: #999; }
-			.group1 { background-color: #444; }
+			.panel { background-color: #444; }
 		</style>
 	</head>
 	<body>
 		<select id="ddlFx">
-			<option value=''>Reset</option>
 			<option value='slideUp'>Slide Up</option>
 			<option value='slideDown'>Slide Down</option>
 			<option value='slideOut'>Slide Out</option>
 			<option value='slideIn'>Slide In</option>
+            <option value='fadeOut'>Fade Out</option>
+            <option value='fadeIn'>Fade In</option>
+            <option value='refresh'>Refresh</option>
 		</select>
+        <select id="ddlDuration">
+            <option value='500'>500</option>
+            <option value='750'>750</option>
+            <option value='1000'>1000</option>
+            <option value='1250'>1250</option>
+            <option value='1500'>1500</option>
+        </select>
 		<a href="javascript:animatePanels()">Animate</a>
-		
+		<a href="javascript:addPanel();">Add Panel</a>
 		<div id="panelWrapper" style="height:300px">
-			<div id="panel1" class="group0">
-				PANEL 1
+			<div id="panel1" class="panel">
 			</div>
-			<div id="panel2" class="group1">
-				PANEL 2
+			<div id="panel2" class="panel">
 			</div>
-			<div id="panel3" class="group1">
-				PANEL 3
+			<div id="panel3" class="panel">
 			</div>
-			<div id="panel4" class="group0">
-				PANEL 4
+			<div id="panel4" class="panel">
 			</div>
 		</div>
 		
