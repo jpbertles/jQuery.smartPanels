@@ -4,7 +4,7 @@
 		<script type="text/javascript" src="jquery.smartPanels.js"></script>
 		<script type="text/javascript">
 			$(function(){
-				$('#panelWrapper').smartPanels({ callback: initComplete });
+				$('#panelWrapper').smartPanels({ subPanelSelector: '.childPanelContainer', callback: initComplete });
 			});
             function animatePanels() {    
                 $('#panelWrapper').smartPanels({ fx: $('#ddlFx').val(), duration: parseInt($('#ddlDuration').val()), callback: definedCallback });
@@ -47,6 +47,17 @@
 		<a href="javascript:addPanel();">Add Panel</a>
 		<div id="panelWrapper" style="height:300px">
 			<div id="panel1" class="panel">
+                <div class="childPanelContainer">
+                    <div id="subPanel1">
+                        sub panel 1
+                    </div>
+                    <div id="subPanel2">
+                        sub panel 2
+                    </div>
+                    <div id="subPanel3">
+                        sub panel 3
+                    </div>
+                </div>
 			</div>
 			<div id="panel2" class="panel">
 			</div>

@@ -18,7 +18,16 @@
             
             if(options != 'destroy') {
                 if(!$container.data('smartPanelSettings')){
-			        var $panels = $container.children();
+                    var $smartPanelSubContainer = $container.find('.smartPanelSubContainer');
+                    if($smartPanelSubContainer.length == 0){
+                        $smartPanelSubContainer = $('<div class="smartPanelSubContainer"></div>');
+                        $container.append($smartPanelSubContainer);
+                    } else {
+                        $smartPanelSubContainer.empty();
+                    }
+                    $smartPanelSubContainer.hide();
+
+			        var $panels = $container.children(':not(.smartPanelSubContainer)');
 			        var panelGroups = Math.round($panels.length / 2);
 
 				        var containerWidth = $container.width();
@@ -31,7 +40,7 @@
 				
 				        $panels.each(function(index, el){
 					        var myGroup = index < panelGroups ? index : ($panels.length - index - 1);
-					        $(el).css({
+					        var $el = $(el).css({
 								        position : 'absolute',
 								        width : panelWidth,
 								        height: panelHeight,
@@ -39,6 +48,18 @@
 								        left: index * panelWidth,
                                         opacity: 1
 							        }).addClass('smartPanel').attr('panelStage', myGroup).attr('panelIndex', index);
+                            if(options.subPanelSelector){
+                                var subPanelContainer = $el.find(options.subPanelSelector).hide().clone().attr('parentPanelIndex',index) ;
+                                $smartPanelSubContainer.append(subPanelContainer);
+                                $el.click(function(){
+                                    var fx = options.fx || typeof options == typeof '' ? options : 'slideIn';
+                                    fx = fx.replace('Up', 'Down').replace('In', 'Out');
+                                    var currentIndex = $(this).attr('panelIndex');
+                                    $container.smartPanels({ fx: fx, callback: function() {
+                                        $smartPanelSubContainer.show().find('[parentPanelIndex=' + currentIndex + ']') .fadeIn();
+                                    }});
+                                });
+                            }
 				        });
 				
 			        $container.css('overflow', 'hidden').data("smartPanelSettings", { panelGroups: panelGroups, panelWidth: panelWidth, panelHeight: panelHeight, containerWidth: containerWidth });
@@ -76,6 +97,13 @@
 	}
 
 	function emptyCallback(){ }
+
+    function moveTo(element, newParent){
+        var cl = element.clone();
+        $(cl).appendTo(newParent);
+        element.remove();
+    }
+
 	
 	function slideUp(container, options, settings){
 		animateForward(container, options, settings, 
