@@ -1,14 +1,23 @@
 ;(function($, undefined){
 	$.fn.smartPanels = function(options){
+        if(!options){
+            options = {};
+        }
+
+        if(options.fx){
+            options.duration = options.duration || 500;
+            options.callback = options.callback || emptyCallback;
+        }
+        
+
 		this.each(function(){
 			var $container = $(this);
             if(options == 'destroy' || options == 'refresh' || (options && options.fx == 'refresh')){
-                $container.data('init', false);
+                $container.data('smartPanelSettings', null);
             }
             
             if(options != 'destroy') {
-                if($container.data('init') != true){
-                    console.debug('initializing');
+                if(!$container.data('smartPanelSettings')){
 			        var $panels = $container.children();
 			        var panelGroups = Math.round($panels.length / 2);
 
@@ -29,134 +38,137 @@
 								        top: '0',
 								        left: index * panelWidth,
                                         opacity: 1
-							        }).addClass('smartPanel').attr('panelStage', myGroup);
+							        }).addClass('smartPanel').attr('panelStage', myGroup).attr('panelIndex', index);
 				        });
 				
-			        $container.css('overflow', 'hidden').data("init", true);
+			        $container.css('overflow', 'hidden').data("smartPanelSettings", { panelGroups: panelGroups, panelWidth: panelWidth, panelHeight: panelHeight, containerWidth: containerWidth });
                 }
-            }
-		});
+            }           
 
-		if(options){
-            if(options.fx){
-                options.duration = options.duration || 500;
-                options.callback = options.callback || emptyCallback;
-            }
+            var container = $(this);
+            var settings = $container.data("smartPanelSettings");
 
             switch (options.fx) {
                 case 'slideUp':
-                    slideUp(this, options);
+                    slideUp(container, options, settings);
                     break;
                 case 'slideDown':
-                    slideDown(this, options);
+                    slideDown(container, options, settings);
                     break;
                 case 'slideOut':
-                    slideOut(this, options);
+                    slideOut(container, options, settings);
                     break;
                 case 'slideIn':
-                    slideIn(this, options);
+                    slideIn(container, options, settings);
                     break;
                 case 'fadeOut':
-                    fadeOut(this, options);
+                    fadeOut(container, options, settings);
                     break;
                 case 'fadeIn':
-                    fadeIn(this, options);
+                    fadeIn(container, options, settings);
                 default:
                     if(options.callback){
                         options.callback();
                     }
                     break;
             }
-		}
+		});
 	}
 
 	function emptyCallback(){ }
 	
-	function slideUp(items, options){
-		animatePanels(items, { top: $(this).height() + 3, display: 'block', opacity: 1 }, {top: 0}, options);
+	function slideUp(container, options, settings){
+		animateForward(container, options, settings, 
+            function(index, myGroup) { 
+                return { top: settings.panelHeight + 3, display: 'block', opacity: 1, left:index * settings.panelWidth };
+            }, 
+            function(index, myGroup) { 
+                return {top: 0};
+            });
 	}
 	
-	function slideDown(items, options){
-		animatePanels(items, { top: -($(this).height() + 3), display: 'block', opacity: 1 }, {top: 0}, options);
+	function slideDown(container, options, settings){
+		animateBackwards(container, options, settings, 
+            function(index, myGroup) { 
+                return { top: 0, display: 'block', opacity: 1, left:index * settings.panelWidth } 
+            }, 
+            function(index, myGroup) { 
+                return {top: settings.panelHeight + 3, display: 'block', opacity: 1 } 
+            });
 	}
 
-    function fadeIn(items, options){
-        animatePanels(items, { opacity: 0 }, { opacity: 1 }, options);
+    function fadeIn(container, options, settings){
+        animateForward(container, options, settings, 
+            function(index, myGroup) { 
+                return { top: 0, display: 'block', opacity: 0, left:index * settings.panelWidth } 
+            }, 
+            function() { 
+                return { opacity: 1 } 
+            });
     }
 
-    function fadeOut(items, options){
-        items.each(function(){
-			var $container = $(this);
-			var $panels = $container.children();
-			var panelGroups = Math.round($panels.length / 2);
-			var containerWidth = $container.width();
-			var panelWidth = containerWidth / $panels.length;
-			
-			$panels.each(function(index, el){
-				$el = $(el);
-				var myGroup = parseInt($el.attr('panelStage'));
-				
-				$el.css({ opacity: 1 }).animate({ opacity: 0 }, ((panelGroups - myGroup) / panelGroups) * options.duration, index == (panelGroups - 1) ? options.callback : emptyCallback);
-			});
-			
-		});
+    function fadeOut(container, options, settings){
+        animateBackwards(container, options, settings, 
+            function(index, myGroup){ 
+                return { top: 0, display: 'block', opacity: 1, left:index * settings.panelWidth } 
+            }, 
+            function(index, myGroup) { 
+                return { opacity: 0 } 
+            });
     }
 	
-	function slideOut(items, options){		
-		items.each(function(){
-			var $container = $(this);
-			var $panels = $container.children();
-			var panelGroups = Math.round($panels.length / 2);
-			var containerWidth = $container.width();
-			var panelWidth = containerWidth / $panels.length;
-			
-			$panels.each(function(index, el){
-				$el = $(el);
-				var myGroup = parseInt($el.attr('panelStage'));
-				var endCss = index < panelGroups ?
-									{ left: - (panelWidth + 3) } :
-									{ left: containerWidth + panelWidth + 3 };
-				$el.css({ left:index * panelWidth, 'z-index': panelGroups - myGroup + 1, opacity: 1 })
-					.animate(endCss, ((panelGroups - myGroup) / panelGroups) * options.duration, index == (panelGroups - 1) ? options.callback : emptyCallback);
-			});
-			
-		});
+	function slideOut(container, options, settings){		
+        animateBackwards(container, options, settings, 
+            function(index, myGroup) { 
+                return { top: 0, display: 'block', opacity: 1, left:index * settings.panelWidth, 'z-index': settings.panelGroups - myGroup + 1};
+            }, 
+            function(index, myGroup){ 
+                return index < settings.panelGroups ?
+									    { left: - (settings.panelWidth + 3) } :
+									    { left: settings.containerWidth + settings.panelWidth + 3 };
+            });
 	}
 	
-	function slideIn(items, options){		
-		items.each(function(){
-			var $container = $(this);
-			var $panels = $container.children();
-			var panelGroups = Math.round($panels.length / 2);
-			var containerWidth = $container.width();
-			var panelWidth = containerWidth / $panels.length;
-			
-			$panels.each(function(index, el){
-				$el = $(el);
-				var myGroup = parseInt($el.attr('panelStage'));
-				var startCss = index < panelGroups ?
-									{ left: - panelWidth, opacity: 1 } :
-									{ left: containerWidth + panelWidth, opacity: 1 };
-				var endCss = { left:index * panelWidth, 'z-index': panelGroups - myGroup + 1 };
-				$el.css(startCss)
-					.animate(endCss, ((1 + myGroup) / (1 + panelGroups)) * options.duration, index == (panelGroups - 1) ? options.callback : emptyCallback);
-			});
-			
-		});
+	function slideIn(container, options, settings){
+        animateForward(container, options, settings,
+            function(index, myGroup){
+                return { 
+                    top: 0, 
+                    display: 'block', 
+                    opacity: 1, 
+                    left: index < settings.panelGroups ? - settings.panelWidth : settings.containerWidth + settings.panelWidth, 
+                    'z-index': settings.panelGroups - myGroup + 1
+                };
+            },
+            function(index, myGroup){
+                return { left:index * settings.panelWidth };
+            });
 	}
 
-	function animatePanels(items, originalCss, endCss, options){		
-		items.each(function(){
-			var $container = $(this);
-			var $panels = $container.children();
-			var panelGroups = Math.round($panels.length / 2);
+    function animateBackwards(container, options, settings, startCssFunction, endCssFunction){
+        var panels = container.children();
 
-			for(var i = 0; i < panelGroups; i++){
-				$container.children('[panelStage=' + i + ']').each(function(index,el){
-					$(el).css(originalCss).animate(endCss, (i + 1) / (panelGroups + 1) * options.duration, (i == (panelGroups - 1) && index == 0) ? options.callback : emptyCallback);
+		panels.each(function(index, el){
+			$el = $(el);
+			var myGroup = parseInt($el.attr('panelStage'));
+			var endCss = endCssFunction(index, myGroup);
+            var startCss = startCssFunction(index, myGroup);
+			$el.css(startCss).animate(endCss, ((settings.panelGroups - myGroup) / settings.panelGroups) * options.duration, index == (settings.panelGroups - 1) ? options.callback : emptyCallback);
+		});
+    }
+
+	function animateForward(container, options, settings, startCssFunction, endCssFunction){		
+			var $panels = container.children();
+
+			for(var i = 0; i < settings.panelGroups; i++){
+				container.children('[panelStage=' + i + ']').each(function(groupIndex,el){
+                    $el = $(el);
+                    var index = $el.attr('panelIndex');
+			        var endCss = endCssFunction(index, i);
+                    var startCss = startCssFunction(index, i);
+					$el.css(startCss).animate(endCss, (i + 1) / (settings.panelGroups + 1) * options.duration, (i == (settings.panelGroups - 1) && index == 0) ? options.callback : emptyCallback);
 				});
 			}
-		});
 	}
 	
 })(jQuery);
