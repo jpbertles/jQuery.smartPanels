@@ -20,7 +20,8 @@
                 $('#log').append("<br />init complete");
             }
             function addPanel() {
-                $('#panelWrapper').append('<div class="panel"></div>').smartPanels('refresh');
+                $('#panelWrapper .smartPanelSubContainer').before('<div class="panel"></div>');
+				$("#panelWrapper").smartPanels('refresh');
             }
 		</script>
 		<style type="text/css">
