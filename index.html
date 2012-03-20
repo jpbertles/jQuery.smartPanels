@@ -3,55 +3,78 @@
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 		<script type="text/javascript" src="jquery.smartPanels.js"></script>
 		<script type="text/javascript">
-		    $(function () {
-		        animatePanels();
-		    });
-            function animatePanels() {
-                $('#panelWrapper')
-                    .smartPanels({
-                        subPanelSelector: '.childPanelContainer',
-                        fx: $('#ddlFx').val(),
-                        duration: parseInt($('#ddlDuration').val()),
-                        initComplete: initComplete
-                    });
-            }
+			$(function () {
+				animatePanels();
+			});
+			function animatePanels() {
+				$('#panelWrapper')
+					.smartPanels({
+						subPanelSelector: '.childPanelContainer',
+						fx: $('#ddlFx').val(),
+						duration: parseInt($('#ddlDuration').val()),
+						initComplete: initComplete
+					});
+			}
 
-            function initComplete(container) {
-                $('#log').append("<br />init complete");
-            }
-            function addPanel() {
-                $('#panelWrapper .smartPanelSubContainer').before('<div class="panel"></div>');
+			function initComplete(container) {
+				$('#log').append("<br />init complete");
+			}
+			function addPanel() {
+				$('#panelWrapper .smartPanelSubContainer').before('<div class="panel"></div>');
 				$("#panelWrapper").smartPanels('refresh');
-            }
+			}
 		</script>
+		<link type="text/css" rel="Stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/ui-lightness/jquery-ui.css" />
 		<style type="text/css">
 			.smartPanel, #panelWrapper{
 				border: 1px solid #ccc;
 			}
 			.panel:nth-child(even)
 			{
-			    background: #a90329;
-                background: -moz-radial-gradient(center, ellipse cover,  #a90329 0%, #8f0222 44%, #6d0019 100%);
-                background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#a90329), color-stop(44%,#8f0222), color-stop(100%,#6d0019));
-                background: -webkit-radial-gradient(center, ellipse cover,  #a90329 0%,#8f0222 44%,#6d0019 100%);
-                background: -o-radial-gradient(center, ellipse cover,  #a90329 0%,#8f0222 44%,#6d0019 100%);
-                background: -ms-radial-gradient(center, ellipse cover,  #a90329 0%,#8f0222 44%,#6d0019 100%);
-                background: radial-gradient(center, ellipse cover,  #a90329 0%,#8f0222 44%,#6d0019 100%);
-                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a90329', endColorstr='#6d0019',GradientType=1 );
+				background: #a90329;
+				background: -moz-radial-gradient(center, ellipse cover,  #a90329 0%, #8f0222 44%, #6d0019 100%);
+				background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#a90329), color-stop(44%,#8f0222), color-stop(100%,#6d0019));
+				background: -webkit-radial-gradient(center, ellipse cover,  #a90329 0%,#8f0222 44%,#6d0019 100%);
+				background: -o-radial-gradient(center, ellipse cover,  #a90329 0%,#8f0222 44%,#6d0019 100%);
+				background: -ms-radial-gradient(center, ellipse cover,  #a90329 0%,#8f0222 44%,#6d0019 100%);
+				background: radial-gradient(center, ellipse cover,  #a90329 0%,#8f0222 44%,#6d0019 100%);
+				filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a90329', endColorstr='#6d0019',GradientType=1 );
 			}
 			.panel:nth-child(odd)
 			{
-			    background: #b8c6df;
-                background: -moz-radial-gradient(center, ellipse cover,  #b8c6df 0%, #6d88b7 100%);
-                background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#b8c6df), color-stop(100%,#6d88b7));
-                background: -webkit-radial-gradient(center, ellipse cover,  #b8c6df 0%,#6d88b7 100%);
-                background: -o-radial-gradient(center, ellipse cover,  #b8c6df 0%,#6d88b7 100%);
-                background: -ms-radial-gradient(center, ellipse cover,  #b8c6df 0%,#6d88b7 100%);
-                background: radial-gradient(center, ellipse cover,  #b8c6df 0%,#6d88b7 100%);
-                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b8c6df', endColorstr='#6d88b7',GradientType=1 );
+				background: #b8c6df;
+				background: -moz-radial-gradient(center, ellipse cover,  #b8c6df 0%, #6d88b7 100%);
+				background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#b8c6df), color-stop(100%,#6d88b7));
+				background: -webkit-radial-gradient(center, ellipse cover,  #b8c6df 0%,#6d88b7 100%);
+				background: -o-radial-gradient(center, ellipse cover,  #b8c6df 0%,#6d88b7 100%);
+				background: -ms-radial-gradient(center, ellipse cover,  #b8c6df 0%,#6d88b7 100%);
+				background: radial-gradient(center, ellipse cover,  #b8c6df 0%,#6d88b7 100%);
+				filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b8c6df', endColorstr='#6d88b7',GradientType=1 );
 			}
 			.childPanel:nth-child(odd){ background-color: #448; }
 			.childPanel:nth-child(even){ background-color: #bfd255; }
+			
+			.ui-icon
+			{
+				display: inline-block; 
+				margin:2px; 
+				padding:4px;
+				background-color:#ccc;
+				font-weight: normal;
+				border-radius:4px; 
+				border:1px solid #555;
+			}
+			
+			.subPanelNavigation .ui-icon-triangle-1-s {
+                background-position: -60px -12px;
+            }
+            
+            .subPanelNavigation .ui-icon-arrowrefresh-1-e {
+                background-position: -156px -60px;
+            }
+            .subPanelNavigation .ui-icon-triangle-1-n {
+                background-position: 5px -12px;
+            }
 		</style>
 	</head>
 	<body>
@@ -60,45 +83,45 @@
 			<option value='slideDown'>Slide Down</option>
 			<option value='slideOut'>Slide Out</option>
 			<option value='slideIn'>Slide In</option>
-            <option value='fadeOut'>Fade Out</option>
-            <option value='fadeIn'>Fade In</option>
-            <option value='refresh'>Refresh</option>
+			<option value='fadeOut'>Fade Out</option>
+			<option value='fadeIn'>Fade In</option>
+			<option value='refresh'>Refresh</option>
 		</select>
-        <select id="ddlDuration">
-            <option value='500'>500</option>
-            <option value='750'>750</option>
-            <option value='1000'>1000</option>
-            <option value='1250'>1250</option>
-            <option value='1500'>1500</option>
-        </select>
+		<select id="ddlDuration">
+			<option value='500'>500</option>
+			<option value='750'>750</option>
+			<option value='1000'>1000</option>
+			<option value='1250'>1250</option>
+			<option value='1500'>1500</option>
+		</select>
 		<a href="javascript:animatePanels()">Animate</a>
 		<a href="javascript:addPanel();">Add Panel</a>
 		<div id="panelWrapper" style="height:300px">
 			<div id="panel1" class="panel">
-                <div class="childPanelContainer">
-                    <div id="subPanel1" class="childPanel">
-                        sub panel 1
-                    </div>
-                    <div id="subPanel2" class="childPanel">
-                        sub panel 2
-                    </div>
-                    <div id="subPanel3" class="childPanel">
-                        sub panel 3
-                    </div>
-                </div>
+				<div class="childPanelContainer">
+					<div id="subPanel1" class="childPanel">
+						sub panel 1
+					</div>
+					<div id="subPanel2" class="childPanel">
+						sub panel 2
+					</div>
+					<div id="subPanel3" class="childPanel">
+						sub panel 3
+					</div>
+				</div>
 			</div>
 			<div id="panel2" class="panel">
-                <div class="childPanelContainer">
-                    <div id="subPanel1a" class="childPanel">
-                        sub panel 1a
-                    </div>
-                    <div id="subPanel2a" class="childPanel">
-                        sub panel 2a
-                    </div>
-                    <div id="Div3subPanel3a" class="childPanel">
-                        sub panel 3a
-                    </div>
-                </div>
+				<div class="childPanelContainer">
+					<div id="subPanel1a" class="childPanel">
+						sub panel 1a
+					</div>
+					<div id="subPanel2a" class="childPanel">
+						sub panel 2a
+					</div>
+					<div id="Div3subPanel3a" class="childPanel">
+						sub panel 3a
+					</div>
+				</div>
 			</div>
 			<div id="panel3" class="panel">
 			</div>
